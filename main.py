@@ -46,10 +46,11 @@ def download(url, file_name, dir_name=None, ext=None):
 
 
 for directory, nextUrl, start in courses:
+    print(directory+": ")
     haveNext = True
     index = 1
     while haveNext:
-        print(f"Page {str(index)}")
+        print(f"Lecture {str(index)}")
         while True:
             request = requests.get(nextUrl)
             if request.status_code == requests.codes.ok:
@@ -74,3 +75,4 @@ for directory, nextUrl, start in courses:
             print("=== Download Finished ===")
         index += 1
         print()
+    print()
