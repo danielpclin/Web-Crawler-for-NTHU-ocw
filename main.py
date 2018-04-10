@@ -43,7 +43,8 @@ def download(url, file_name, dir_name=None, ext=None):
     # guess mime if ext not given
     if ext is None:
         mime = magic.Magic(mime=True)
-        mime_type = mime.from_buffer(open(path, 'rb').read(1024))
+        mime_type = mime.from_buffer(open(path, 'r+b').read(1024))
+        # https://docs.python.org/3/library/functions.html#open
         ext = mimetypes.guess_extension(mime_type)
     # rename file with extension
     print(f"Renaming file {file_name} to {file_name+ext}")
