@@ -7,6 +7,7 @@ import os
 import urllib
 
 baseUrl = 'http://ocw.nthu.edu.tw/ocw/'
+downloadUrl = 'http://ocw.nthu.edu.tw/videosite/assert/{}/1920_1080_3072.MP4'
 # (Directory Name, Url, Start Index)
 courses = [('Differential Equation', 'http://ocw.nthu.edu.tw/ocw/index.php?page=chapter&cid=145&chid=1775', 1),
            ('Operating System', 'http://ocw.nthu.edu.tw/ocw/index.php?page=chapter&cid=141&chid=1819', 1)]
@@ -23,12 +24,12 @@ def download(url, file_name, dir_name=None, ext=None):
     # Save in directory
     script_dir = os.path.dirname(os.path.abspath(__file__))
     if dir_name is not None:
-        dest_dir = os.path.join(script_dir, dir_name)
+        destination_dir = os.path.join(script_dir, dir_name)
         try:
-            os.makedirs(dest_dir)
+            os.makedirs(destination_dir)
         except OSError:
             pass  # already exists
-        path = os.path.join(dest_dir, file_name)
+        path = os.path.join(destination_dir, file_name)
     else:
         path = file_name
 
@@ -68,13 +69,9 @@ for directory, nextUrl, start in courses:
                 print("Link =", img.parent['href'])
                 parseResult = urllib.parse.urlparse(img.parent['href'])
                 queryDict = urllib.parse.parse_qs(parseResult.query)
-                queryDict['filename'] = ['1920_1080_3072.MP4']
-                queryString = urllib.parse.urlencode(queryDict, doseq=True)
-                parseResult = parseResult._replace(query=queryString)
-                downloadUrl = urllib.parse.urlunparse(parseResult)
-                print("Changing link to high quality:", downloadUrl)
-                download(downloadUrl, str(index) + letter, directory)
-                # http://ocw.nthu.edu.tw/videosite/assert/3813/1920_1080_3072.MP4
+                videoId = queryDict['id'][0]
+                print(f"Downloading {downloadUrl.format(videoId)}")
+                download(downloadUrl.format(videoId), str(index) + letter, directory)
         else:
             print("Page smaller than given Start index, Ignoring....")
         nextUrlList = soup.find('strong', text='相關連結').parent.next_sibling.next_sibling.find_all('li')
